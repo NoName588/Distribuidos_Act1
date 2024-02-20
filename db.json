@@ -1,0 +1,29 @@
+{
+  "user": [
+    
+    
+        {
+          "id": 1,
+          "username": "lololex",
+          "deck": [1, 25, 36, 588, 87]
+        },
+        {
+          "id": 2,
+          "username": "wajooo",
+          "deck": [6, 10, 25, 190, 90]
+        },
+        {
+          "id": 3,
+          "username": "Kahomm",
+          "deck": [100, 0, 0, 40, 57]
+        }
+      
+    
+  ],
+  "card": [
+    {
+      "id": 1,
+      "class": "common"
+    }
+  ]
+}
