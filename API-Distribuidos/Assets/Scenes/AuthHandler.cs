@@ -5,15 +5,18 @@ using TMPro;
 using UnityEngine.Networking;
 using Unity.VisualScripting;
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
 
 public class AuthHandler : MonoBehaviour
 {
     string url = "https://sid-restapi.onrender.com";
     public TMP_Text errorMessageText;
 
+
+
     void Start()
     {
-       
+
     }
 
     public void ENTRARREGISTRO() { 
@@ -36,6 +39,16 @@ public class AuthHandler : MonoBehaviour
         data.password = GameObject.Find("InputFieldPassword").GetComponent<TMP_InputField>().text;
 
         StartCoroutine("LogIn", JsonUtility.ToJson(data));
+
+    }
+
+    public void ENTRARLOGOUT(string sceneName)
+    {
+
+        AuthenticationData data = new AuthenticationData();
+
+        SceneManager.LoadScene(sceneName);
+        StartCoroutine("LogOut", JsonUtility.ToJson(data));
 
     }
 
@@ -88,6 +101,7 @@ public class AuthHandler : MonoBehaviour
             {
                 AuthenticationData data = JsonUtility.FromJson<AuthenticationData>(request.downloadHandler.text);
                 Debug.Log(data.token);
+
                 SceneManager.LoadScene("MonoPong");
                 StartCoroutine("LogIn", json);
                 
@@ -101,6 +115,44 @@ public class AuthHandler : MonoBehaviour
         }
 
     }
+
+
+
+    IEnumerator LogOut(string json)
+    {
+        UnityWebRequest request = UnityWebRequest.Put(url + "/api/auth/login",json);
+        request.method = "POST";
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.SendWebRequest();
+        if (request.result == UnityWebRequest.Result.ConnectionError)
+        {
+            Debug.Log(request.error);
+            errorMessageText.text = "UPPS ERROR DE CONEXION :c.";
+        }
+        else
+        {
+            Debug.Log(request.downloadHandler.text);
+            if (request.responseCode == 200)
+            {
+                AuthenticationData data = null;
+                Debug.Log(data.token);
+               
+                StartCoroutine("LogOut", json);
+              
+
+            }
+            else
+            {
+                Debug.Log(request.responseCode + "|" + request.error);
+                errorMessageText.text = "ERROR!";
+
+            }
+        }
+    }
+
+
+
 }
 [System.Serializable]
 public class AuthenticationData

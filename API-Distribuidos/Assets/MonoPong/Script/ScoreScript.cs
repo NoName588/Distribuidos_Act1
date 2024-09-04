@@ -1,17 +1,38 @@
-﻿/*
-this script manages the score
-*/
-
-using UnityEngine;
-using UnityEngine.UI;
+﻿using Firebase.Auth;
+using Firebase.Database;
 using System.Collections;
+using UnityEngine;
+using TMPro;
+using Firebase.Extensions;
+using UnityEngine.UI;
 
 public class ScoreScript : MonoBehaviour {
 
-    /*<summary>the current score ...ie number of bounces<summary>*/
+    [SerializeField]
+    public Button _saveScoreButton;
+
     public int Score = 0;
 
     //method for updating the score
+
+    private void Reset()
+    {
+        _saveScoreButton = GetComponent<Button>();
+
+    }
+
+    void Start()
+    {
+        _saveScoreButton.onClick.AddListener(HandlerSaveScoreButtonClicked);
+    }
+
+    private void HandlerSaveScoreButtonClicked()
+    {
+
+        string uid = FirebaseAuth.DefaultInstance.CurrentUser.UserId;
+        FirebaseDatabase.DefaultInstance.RootReference.Child("users").Child(uid).Child("score").SetValueAsync(Score);
+    }
+
     public void UpdateScore(int Delta)
     {
         Score += Delta;
